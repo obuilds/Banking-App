@@ -2882,6 +2882,9 @@ header {
     .transact-headings {
         display: none;
     }
+    .transact-type{
+        margin-right: -10px;
+    }
 
     .Transact-Head {
         display: block;
