@@ -2767,9 +2767,6 @@ header {
         margin-top: 10px;
     }
 
-    .transaction-container {
-        min-height: 50vh;
-    }
 
     .transact-type {
         display: flex;
@@ -2801,6 +2798,9 @@ header {
 }
 
 @media (max-width: 698px) {
+    .header-pri {
+            font-size: 15px;
+        }
     .container-class {
         height: 100vh;
         width: 100%;
@@ -2844,9 +2844,7 @@ header {
         display: block;
     }
 
-    .transaction-container {
-        max-height: 50vh;
-    }
+    
 
     .dropdown-menu {
         padding: 0 20px;
