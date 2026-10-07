@@ -2583,7 +2583,7 @@ header {
 .transaction-container {
     background-color: white;
     margin: 20px 30px;
-    max-height: 200px;
+    max-height: 240px;
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: none;
