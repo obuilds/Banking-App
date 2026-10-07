@@ -254,7 +254,7 @@ const finaldiv = document.getElementById('final-deposit')
 const finalbtn = document.getElementById('Finished')
         
 finaldiv .innerHTML = `<h2>Deposit Successful</h2>
-<p class="form-label">$${this.addcomastonumber(this.pendingDeposit)} has been deposited into your account</p>
+<p clas = "final-text">$${this.addcomastonumber(this.pendingDeposit)} has been deposited into your account</p>
 <div class="confirm-content">
 <div class="confirm-body">
                     
@@ -354,7 +354,7 @@ _withdraw(e, acc, amount){
         const finalbtn = document.getElementById('Finished-withdrawal')
 
         finaldiv .innerHTML = `<h2>Withdrawal Successful</h2>
-                        <p class="form-label">$${this.addcomastonumber(this.pendingWithdrawal)} has been withdrawn from your account</p>
+                        <pclass ="final-text">$${this.addcomastonumber(this.pendingWithdrawal)} has been withdrawn from your account</p>
                         <div class="confirm-content">
                             <div class="confirm-body">
                     
@@ -481,7 +481,7 @@ _withdraw(e, acc, amount){
         const finalbtn = document.getElementById('Finished-transfer')
 
         finaldiv.innerHTML = `<h2>Transfer Successful</h2>
-                        <p class="form-label">$${this.addcomastonumber(this.pendingTransfer)} has been sent to ${this.pendingreceiver.name}</p>
+                        <p class = "final-text">$${this.addcomastonumber(this.pendingTransfer)} has been sent to ${this.pendingreceiver.name}</p>
                         
                         <div class="confirm-content">
                             <div class="confirm-body">

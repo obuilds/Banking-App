@@ -2716,7 +2716,9 @@ header {
     font-weight: bold;
     color: green;
 }
-
+.final-text{
+    margin: 10px;
+}
 /* Transfer Section */
 
 .finalTransfer-details {
