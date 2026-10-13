@@ -11,7 +11,7 @@ class App{
         
         this._loadSavedUser()
         window
-        .addEventListener('DOMContentLoaded', this.reload.bind(this))
+        .addEventListener('DOMContentLoaded', this._reload.bind(this))
         document
         .getElementById('login-form')
         .addEventListener('submit', this._login.bind(this))
@@ -39,7 +39,7 @@ class App{
         this._setupDepositConfirmation()
         this._setupWithdrwalConfirmation()
         this._setupConfirmTransfer()
-        this._loadSavedData()
+        this._loadSavedBalance()
         this._loadTransactions()
     }
     
@@ -70,18 +70,18 @@ class App{
         const dashBoard = document.getElementById('dashboard')
         const formInput = document.getElementById('form-input')
         if(formInput.value === ''){
-        this.Alert('alert-danger', 'Please Fill In Your Account Details')
+        this._Alert('alert-danger', 'Please Fill In Your Account Details')
         return
     }
     this.accountNumber = +formInput.value
     const user = this.bank.findUser(this.accountNumber)
     formInput.value = ''
     if(!user){
-        this.Alert('alert-danger', 'User Does Not Exist')
+        this._Alert('alert-danger', 'User Does Not Exist')
         return
     }
     this.bank.login(this.accountNumber)
-    this.Alert('alert-success', 'Login Successful')
+    this._Alert('alert-success', 'Login Successful')
     loginPage.classList.add('display')
     dashBoard.classList.remove('display')
     Storage.setcurrentUser(this.accountNumber)
@@ -89,7 +89,7 @@ class App{
     this._displayTransactions()
     this.headerDetails()
     }
-    Alert(classList, text){
+    _Alert(classList, text){
         const div = document.getElementById('alert-container')
         div.classList.remove('alert-danger', 'alert-info', 'alert-success', 'alert-warning')
         const btn = document.createElement('button')
@@ -99,13 +99,13 @@ class App{
         btn.setAttribute('id', 'btn-remove')
         btn.classList.add('btn-close')
         div.appendChild(btn)
-       setTimeout(this.show, 5000)
-       this.closeBtn()
+       setTimeout(this._show, 5000)
+       this._closeBtn()
     }
-    show(){
+    _show(){
         document.getElementById('alert-container').classList.add('display')
     }
-    closeBtn(){
+    _closeBtn(){
         document.getElementById('btn-remove').addEventListener('click', this.show)
         clearTimeout(this.show)
     }
@@ -117,19 +117,19 @@ class App{
 
 
        if(+userAge.value === '' || userName.value === ''){
-            this.Alert('alert-danger', 'Please Fill In Your Details')
+            this._Alert('alert-danger', 'Please Fill In Your Details')
             return
         }
         if(!+userAge.value || !String(userName)){
-             this.Alert('alert-danger', 'Incorrect Input')
+             this._Alert('alert-danger', 'Incorrect Input')
             return
         }
         if(+userAge.value < 18){
-             this.Alert('alert-info', 'You Have To Be 18 Years And Above To An Account')
+             this._Alert('alert-info', 'You Have To Be 18 Years And Above To An Account')
             return
         }
         const user = this.bank.createUser(this.Captialize(userName.value))
-        this.Alert('alert-success' ,` Account Created Successfully
+        this._Alert('alert-success' ,` Account Created Successfully
             <p>Account Number : ${user.account.accountNumber}</p>
             <small>Login With Your Account Number</small>`)
                     clearTimeout(this.show)
@@ -168,10 +168,10 @@ _logout(){
     dashBoard.classList.add('display')
     this.bank.logout()
     Storage.setcurrentUser(null)
-    this.Alert('alert-info', 'You Logged Out')
+    this._Alert('alert-info', 'You Logged Out')
 
 }
-reload(){
+_reload(){
     const savedUser = Storage.getcurrentUser('currentUser')
     if(savedUser){
     const user = this.bank.findUser(Number(savedUser))
@@ -201,7 +201,7 @@ _deposit(e, acc, amount){
     this.pendingDeposit = amount
 
         if(!amount|| Dform.value < 1000){
-            this.Alert('alert-info', 'Amount can not be less than $1000')
+            this._Alert('alert-info', 'Amount can not be less than $1000')
             return
         }
         Dform.value = ''
@@ -209,10 +209,10 @@ _deposit(e, acc, amount){
         const modalEl = document.getElementById('deposit-modal')
         const modal = Modal.getInstance(modalEl)
         modal.hide()
-        this.confirmdeposit(acc)
+        this._confirmdeposit(acc)
         
     }
-confirmdeposit(acc){
+_confirmdeposit(acc){
         
         const dconfirm = document.getElementById('dconfirm-body')
         dconfirm.innerHTML = `<p>You are about to deposit</p>
@@ -244,11 +244,11 @@ _setupDepositConfirmation(){
     const modalEl = document.getElementById('cdeposit-modal')
     const modal = Modal.getInstance(modalEl)
     modal.hide()
-    this.finaldeposit()
+    this._finaldeposit()
     this.pendingDeposit = 0
     })
 }
-finaldeposit(){
+_finaldeposit(){
         
 const finaldiv = document.getElementById('final-deposit')
 const finalbtn = document.getElementById('Finished')
@@ -270,7 +270,7 @@ finaldiv .innerHTML = `<h2>Deposit Successful</h2>
 </div>
 </div>`
 this._displayTransactions()
-this._savesBalances()
+this._saveBalances()
 this._saveTransaction()
         
 finalbtn.addEventListener('click', ()=>{
@@ -294,7 +294,7 @@ _withdraw(e, acc, amount){
         amount = +Wform.value
         this.pendingWithdrawal = amount
         if(!amount || Wform.value < 500){
-            this.Alert('alert-info', 'Amount can not be less than $500')
+            this._Alert('alert-info', 'Amount can not be less than $500')
             return
         }
         Wform.value = ''
@@ -336,7 +336,7 @@ _withdraw(e, acc, amount){
             const amount = this.pendingWithdrawal
 
             if(amount > this.bank.currentUser.account.balance){
-                this.Alert('alert-warning', 'Insufficient Funds')
+                this._Alert('alert-warning', 'Insufficient Funds')
                 return
             }
         this.bank.withdraw(this.bank.currentUser.account.accountNumber, amount)
@@ -369,7 +369,7 @@ _withdraw(e, acc, amount){
                                 </div>
                             </div>
                         </div>`
-                        this._savesBalances()
+        this._saveBalances()
         this._displayTransactions()
         this._saveTransaction()
                         
@@ -396,15 +396,15 @@ _withdraw(e, acc, amount){
         this.pendingreceiver = user
         
         if(receiverDetails.value === '' || TransferAmount.value === '' ){
-            this.Alert('alert-danger', 'Please Fill In Your Details')
+            this._Alert('alert-danger', 'Please Fill In Your Details')
             return
         }
         if(user ===this.bank.currentUser){
-            this.Alert('alert-warning', 'Sender Cannot Be Receiver')
+            this._Alert('alert-warning', 'Sender Cannot Be Receiver')
             return
         }
         if(!+TransferAmount.value || !user){
-            this.Alert('alert-danger', 'Invalid Details: Check Account Number or Amount')
+            this._Alert('alert-danger', 'Invalid Details: Check Account Number or Amount')
             return
         }
         receiverDetails.value = ''
@@ -461,7 +461,7 @@ _withdraw(e, acc, amount){
 
 
             if(this.pendingTransfer > this.bank.currentUser.account.balance){
-                this.Alert('alert-warning', 'Insufficient Funds')
+                this._Alert('alert-warning', 'Insufficient Funds')
             const modalEl = document.getElementById('ctransfer-modal')
             const modal = Modal.getInstance(modalEl)
             modal.hide()
@@ -500,7 +500,7 @@ _withdraw(e, acc, amount){
                                 </div>
                             </div>
                         </div>`
-                        this._savesBalances()
+                        this._saveBalances()
                 this._displayTransactions()
                 this._saveTransaction()
                         finalbtn.addEventListener('click', ()=>{
@@ -606,7 +606,7 @@ _withdraw(e, acc, amount){
                 }
         })
     }
-    _savesBalances(){
+    _saveBalances(){
         const balances = this.bank.users.map((user)=>{
             return{
                 accountNumber: user.account.accountNumber,
@@ -616,7 +616,7 @@ _withdraw(e, acc, amount){
         Storage.setBalance(balances)
 
     }
-    _loadSavedData(){
+    _loadSavedBalance(){
         const balances = Storage.getBalance()
         
         balances.forEach((savedBalance)=>{
@@ -694,7 +694,7 @@ _withdraw(e, acc, amount){
                     <p class="text-end">Your trust<br> is our priority</p>
                     <i class="fa-solid fa-shield"></i>
                 </div>`
-                this._savesBalances()
+                this._saveBalances()
                 this._saveTransaction()
 
     }
