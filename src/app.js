@@ -50,45 +50,7 @@ class App{
         return value.charAt(0).toUpperCase() + value.slice(1)
     }
 
-    _formlink(){
-        const loginPage = document.getElementById('login-page')
-        const signupPage = document.getElementById('Signup-page')
-        if(!loginPage.classList.contains('display')){
-            loginPage.classList.add('display')
-            signupPage.classList.remove('display')
-        }else{
-            loginPage.classList.remove('display')
-            signupPage.classList.add('display')
-
-        }
-
-    }
     
-    _login(e){
-        e.preventDefault()
-        const loginPage =document.getElementById('login-page')
-        const dashBoard = document.getElementById('dashboard')
-        const formInput = document.getElementById('form-input')
-        if(formInput.value === ''){
-        this._Alert('alert-danger', 'Please Fill In Your Account Details')
-        return
-    }
-    this.accountNumber = +formInput.value
-    const user = this.bank.findUser(this.accountNumber)
-    formInput.value = ''
-    if(!user){
-        this._Alert('alert-danger', 'User Does Not Exist')
-        return
-    }
-    this.bank.login(this.accountNumber)
-    this._Alert('alert-success', 'Login Successful')
-    loginPage.classList.add('display')
-    dashBoard.classList.remove('display')
-    Storage.setcurrentUser(this.accountNumber)
-    this.balanceDetails()
-    this._displayTransactions()
-    this.headerDetails()
-    }
     _Alert(classList, text){
         const div = document.getElementById('alert-container')
         div.classList.remove('alert-danger', 'alert-info', 'alert-success', 'alert-warning')
@@ -107,7 +69,53 @@ class App{
     }
     _closeBtn(){
         document.getElementById('btn-remove').addEventListener('click', this.show)
-        clearTimeout(this.show)
+        clearTimeout(this._show)
+    }
+
+    _formlink(){
+        const loginPage = document.getElementById('login-page')
+        const signupPage = document.getElementById('Signup-page')
+        if(!loginPage.classList.contains('display')){
+            loginPage.classList.add('display')
+            signupPage.classList.remove('display')
+        }else{
+            loginPage.classList.remove('display')
+            signupPage.classList.add('display')
+
+        }
+
+    }
+    
+    _login(e){
+        e.preventDefault()
+        
+        const formInput = document.getElementById('form-input')
+        if(formInput.value === ''){
+        this._Alert('alert-danger', 'Please Fill In Your Account Details')
+        return
+    }
+    this.accountNumber = +formInput.value
+    const user = this.bank.findUser(this.accountNumber)
+    formInput.value = ''
+    if(!user){
+        this._Alert('alert-danger', 'User Does Not Exist')
+        return
+    }
+    this.bank.login(this.accountNumber)
+    this._Alert('alert-success', 'Login Successful')
+    Storage.setcurrentUser(this.accountNumber)
+    this._access()
+    }
+    _access(){
+    const loginPage =document.getElementById('login-page')
+    const dashBoard = document.getElementById('dashboard')
+
+    loginPage.classList.add('display')
+    dashBoard.classList.remove('display')
+    this.balanceDetails()
+    this._displayTransactions()
+    this.headerDetails()
+
     }
     
     _signup(e){
@@ -132,34 +140,16 @@ class App{
         this._Alert('alert-success' ,` Account Created Successfully
             <p>Account Number : ${user.account.accountNumber}</p>
             <small>Login With Your Account Number</small>`)
-                    clearTimeout(this.show)
+                    clearTimeout(this._show)
+        Storage.setcurrentUser(user.account.accountNumber)
         this._saveuser()
+        this._reload()
         userName.value = ''
         userAge.value = ''
     }
     
     
-    headerDetails(){
-    const hsec = document.getElementById('header-sec')
-        hsec.innerHTML = `
-    <div class="rounded-pill">
-    <h4>${this.bank.currentUser.name[0].toUpperCase()}</h4>
-    </div>
-    <div id="details" class="header-details">
-    <h4 class="acct-header">${this.bank.currentUser.name}</h4>
-    <p class="acct">Acc: ${this.bank.currentUser.account.accountNumber}</p>
-    </div>
-    <div class="drop-down" >
-                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
-                        <div class="dropdown-menu">
-                            <div>
-                                <h4 class="acct-header">${this.bank.currentUser.name}</h4>
-                                <p class="acct">Acc: ${this.bank.currentUser.account.accountNumber}</p>
-                            </div>
-                        </div>
-                    </div>
-    `
-    }
+    
         
 _logout(){
     const loginPage =document.getElementById('login-page')
@@ -618,11 +608,14 @@ _withdraw(e, acc, amount){
     }
     _loadSavedBalance(){
         const balances = Storage.getBalance()
+        if(!balances){
+            return
+        }
         
         balances.forEach((savedBalance)=>{
             const user = this.bank.findUser(savedBalance.accountNumber)
             if(!user){
-                return
+                return console.log('errer')
             }
             user.account.balance = savedBalance.balance
         })
@@ -696,7 +689,27 @@ _withdraw(e, acc, amount){
                 </div>`
                 this._saveBalances()
                 this._saveTransaction()
-
+    }
+    headerDetails(){
+    const hsec = document.getElementById('header-sec')
+        hsec.innerHTML = `
+    <div class="rounded-pill">
+    <h4>${this.bank.currentUser.name[0].toUpperCase()}</h4>
+    </div>
+    <div id="details" class="header-details">
+    <h4 class="acct-header">${this.bank.currentUser.name}</h4>
+    <p class="acct">Acc: ${this.bank.currentUser.account.accountNumber}</p>
+    </div>
+    <div class="drop-down" >
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"></button>
+                        <div class="dropdown-menu">
+                            <div>
+                                <h4 class="acct-header">${this.bank.currentUser.name}</h4>
+                                <p class="acct">Acc: ${this.bank.currentUser.account.accountNumber}</p>
+                            </div>
+                        </div>
+                    </div>
+    `
     }
 
 
